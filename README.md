@@ -28,4 +28,39 @@ predict(lm.fit, data.frame(medv=c(2,8,3),interval ="prediction")
 
 confint(lm.fit)
 
+predict(lm.fit, data.frame(medv=(c(2,8,3)),interval = "confidence"))
 
+predict(lm.fit, data.frame(medv=(c(2,8,3)),interval = "prediction"))
+
+lm.fit5 = lm(medv~lstat,data = Boston)
+attach(Boston)
+lm.fit5 = lm (medv~lstat)
+
+predict(lm.fit5, data.frame(lstat=c(5,10,15)), interval ="confidence")
+
+confint(lm.fit5)
+predict(lm.fit5, data.frame(lstat=c(5,10,15)),interval="prediction")
+
+
+plot(medv,lstat)
+abline(lm.fit5)
+
+par(mfrow =c (2,2))
+plot(lm.fit)
+
+plot(predict(lm.fit),residuals(lm.fit))
+plot(medv,lstat,col="red",pch="+")
+
+plot(hatvalues (lm.fit))
+which.max(hatvalues(lm.fit))
+
+# Mutiple linear regression
+
+lm.fit6 = lm(medv~lstat+age,data=Boston)
+attach(Boston)
+lm.fit6 = lm(medv~lstat+age)
+
+summary(lm.fit6)
+
+lm.fit7 = lm(medv~.,data= Boston)
+summary(lm.fit7)
