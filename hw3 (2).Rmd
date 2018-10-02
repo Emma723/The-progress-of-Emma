@@ -1,0 +1,64 @@
+---
+title: "615_Assignment3"
+author: "Xinyi Wang,Hao Qin,Qixuan Zhang,Shiyu Zhang"
+date: "9/30/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+Read Data and Data Cleaning 
+```{r}
+#Read data
+my_data <- read.csv("https://raw.githubusercontent.com/Emma723/MA-615-Assignment/master/pokemon.csv", header = TRUE,quote="")
+mydata<- data.table(my_data)
+#Data Cleaning
+names(mydata)
+Attack <-mydata%>%filter(Attack>=20)
+dim(mydata$Speed)
+mydata %>% arrange(desc(Defense))
+```
+
+```{r}
+#str(mydata)
+ggplot(mydata %>% 
+      group_by(Type.1) %>%
+      mutate(med=median(Attack)),
+      aes(x=reorder(Type.1, Attack, FUN=median), y=Attack,color = Type.1)) +
+coord_flip() +
+geom_boxplot(aes(fill=med)) +
+scale_fill_gradient(low="white", high="white") +
+labs(x="Type 1") +
+theme(legend.position="none") +
+ggtitle("Xinyi Wang")  
+
+```
+
+```{r}
+
+HHHQ=mydata%>%
+  group_by(Level)%>%
+  summarise(mean_AT=mean(Attack), N=n())
+ggplot(HHHQ, aes(x = Level,y =mean_AT, group = factor(1))) + geom_bar(stat = "identity", width = 0.5, aes(fill=N))+theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+ggtitle("Hao Qin")
+```
+
+```{r}
+mydata1<-mydata %>%
+         group_by(Defense) %>%
+          mutate(mean_speed=mean(Speed),N=n())
+
+ggplot(mydata1,aes(x=Defense,y=mean_speed))+
+geom_point()+ geom_smooth(method = "lm")+
+ggtitle("Qixuan Zhang")  
+ggplot(mydata1, aes(x = Defense,y =mean_speed, group = factor(2))) +
+  geom_col(width = 0.9, aes(fill=N))+
+  theme(axis.text.x = element_text(angle = 50, hjust = 0.6, vjust = 0.3))+
+  ggtitle("Qixuan Zhang")
+  
+       
+       
+```
+
+This box plots shows the spread of all attack grouped by Type 1. We can say from the plot that Dragon type pokemons have an edge over the other types as they have a higher attacks compared to the other types. 
