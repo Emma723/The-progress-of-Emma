@@ -1,0 +1,97 @@
+---
+title: "615_Assignment3"
+author: "Xinyi Wang,Hao Qin,Qixuan Zhang,Shiyu Zhang"
+date: "9/30/2018"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+#library(data.table)
+```
+
+#Read Data and Data Cleaning 
+```{r}
+#Read data
+mydata <- read.csv("pokemon.csv")
+#Data Cleaning 
+names(mydata)
+Attack <-mydata%>%filter(Attack>=20)
+dim(mydata$Speed)
+head(mydata %>% arrange(desc(Defense)))
+```
+
+#Variable description
+The dataset we use is from Kaggle "Pokemon With Stats". Below is brief description of all variables.
+```{r}
+knitr::include_graphics('variable.png')
+```
+
+
+#Plots
+##1.Box plot
+```{r}
+#str(mydata)
+ggplot(mydata %>% 
+      group_by(Type.1) %>%
+      mutate(med=median(Attack)),
+      aes(x=reorder(Type.1, Attack, FUN=median), y=Attack,color = Type.1)) +
+coord_flip() +
+geom_boxplot(aes(fill=med)) +
+scale_fill_gradient(low="white", high="white") +
+labs(x="Type 1") +
+theme(legend.position="none") +
+ggtitle("Xinyi Wang")  
+```
+
+This box plots shows the spread of all attack grouped by Type 1. We can say from the plot that Dragon type pokemons have an edge over the other types as they have a higher attacks compared to the other types.
+
+##2.Bar plot
+```{r}
+
+HHHQ=mydata%>%
+  group_by(Level)%>%
+  summarise(mean_AT=mean(Attack), N=n())
+ggplot(HHHQ, aes(x = Level,y =mean_AT, group = factor(1))) + geom_bar(stat = "identity", width = 0.5, aes(fill=N))+theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+ggtitle("Hao Qin")
+```
+
+add discussion here!
+
+##3.Scatter Plot & Bar Plot
+```{r}
+
+mydata1<-mydata %>%
+         group_by(Defense) %>%
+          mutate(mean_speed=mean(Speed),N=n())
+
+ggplot(mydata1,aes(x=Defense,y=mean_speed))+
+geom_point()+ geom_smooth(method = "lm")+
+ggtitle("Qixuan Zhang")  
+ggplot(mydata1, aes(x = Defense,y =mean_speed, group = factor(2))) +
+  geom_col(width = 0.9, aes(fill=N))+
+  theme(axis.text.x = element_text(angle = 50, hjust = 0.6, vjust = 0.3))+
+  ggtitle("Qixuan Zhang")
+  
+```
+
+add discussion here!
+
+##4.Three dimension Scatter Plot
+```{r}
+mydata4<-mydata %>%
+         group_by(Speed) %>%
+         mutate(mean_hp=mean(HP),N=n())
+
+ggplot(data = mydata4) + 
+  geom_point(mapping = aes(x = Speed, y = HP)) + 
+  facet_wrap(~ 'Type 2', nrow = 4)+ggtitle("Shiyu Zhang")
+```
+
+The three dimension plot shows that the relationship between speed, HP and type2. from the speed 
+perspective, most of the speed from different type falls between 1 to 100, the 'rock' is a little 
+bit slow (speed falls between 0-50),the 'fighting' is better in general since most of the speed 
+lies between 50 and 150.
+From the HP persepctive, we can see that almost all the data from type 2 lies between 0 and 100,
+we can say that the HP is not strongly related to the type of pokemon.
